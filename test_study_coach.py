@@ -1,10 +1,3 @@
-"""
-Level 1 tests for the Study Coach (Performance Agent + Study Planner Agent).
-
-Run:  python test_study_coach.py
-The integration test at the bottom runs only if Member 4's quiz_agent.py is
-importable (copy it next to this file, or set PYTHONPATH to Member 4's repo).
-"""
 
 import copy
 import json

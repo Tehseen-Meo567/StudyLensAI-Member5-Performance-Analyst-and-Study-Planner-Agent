@@ -1,0 +1,15 @@
+{
+  "mcqs": [
+    {"question": "Which organelle produces most of the cell's ATP?", "options": ["Nucleus", "Mitochondria", "Ribosome", "Golgi apparatus"], "correct_answer": "Mitochondria", "explanation": "Mitochondria generate most of the cell's ATP.", "topic": "Cell Biology"},
+    {"question": "Which base pairs with adenine in DNA?", "options": ["Guanine", "Thymine", "Cytosine", "Uracil"], "correct_answer": "Thymine", "explanation": "Adenine pairs with thymine.", "topic": "Genetics"},
+    {"question": "Where does protein synthesis occur?", "options": ["Ribosome", "Lysosome", "Vacuole", "Cell wall"], "correct_answer": "Ribosome", "explanation": "Ribosomes translate mRNA into proteins.", "topic": "Cell Biology"}
+  ],
+  "true_false": [
+    {"statement": "DNA is a single-stranded molecule.", "answer": false, "explanation": "DNA is a double helix.", "topic": "Genetics"},
+    {"statement": "Ribosomes synthesize proteins.", "answer": true, "explanation": "Ribosomes translate mRNA into proteins.", "topic": "Cell Biology"}
+  ],
+  "short_questions": [
+    {"question": "What is DNA?", "answer": "A molecule that carries genetic information", "topic": "Genetics"}
+  ],
+  "long_questions": []
+}

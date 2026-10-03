@@ -1,5 +1,5 @@
 """
-StudyLens AI - Study Coach entry point for the Orchestrator (Member 1)
+StudyLens AI - Study Coach entry point for the Orchestrator 
 
     from study_coach_agent import run_study_coach_agent
     out = run_study_coach_agent(quiz_result, exam_date="2026-10-20", hours_per_day=2)

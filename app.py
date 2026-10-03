@@ -1,9 +1,5 @@
 """
-StudyLens AI - Study Coach demo (Performance Analysis + Study Planner)
-
-Run:  streamlit run app.py
-Paste or upload Member 4's quiz result JSON (or use the sample), pick an exam
-date and daily study hours, and see the analysis and the study plan.
+StudyLens AI - Study Coach (Performance Analysis + Study Planner)
 """
 
 import json

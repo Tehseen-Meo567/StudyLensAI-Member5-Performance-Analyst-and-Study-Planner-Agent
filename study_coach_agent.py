@@ -1,25 +1,4 @@
-"""
-StudyLens AI - Study Coach entry point for the Orchestrator 
 
-    from study_coach_agent import run_study_coach_agent
-    out = run_study_coach_agent(quiz_result, exam_date="2026-10-20", hours_per_day=2)
-
-    out["performance"]  -> Performance Agent output (weak/strong topics, insight)
-    out["study_plan"]   -> Study Planner Agent output (day-by-day plan)
-
-Return value:
-    {"status": "success" | "error", "error": None | "message",
-     "performance": {...} | None, "study_plan": {...} | None}
-
-If only the planner fails (e.g. a bad exam date) status is "error" but
-"performance" is still filled, so the UI can still show the analysis.
-
-Adaptive use: after the student retakes the quiz, call it again with the new
-quiz result and pass the old analysis as previous_performance:
-
-    out2 = run_study_coach_agent(new_quiz_result, exam_date, hours,
-                             previous_performance=out["performance"])
-"""
 
 from __future__ import annotations
 

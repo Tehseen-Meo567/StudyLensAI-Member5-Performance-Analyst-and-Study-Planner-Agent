@@ -1,5 +1,5 @@
 """
-StudyLens AI - Study Planner Agent (Member 5, part 2)
+StudyLens AI - Study Planner Agent
 
 Flow:  Performance Agent -> generate_study_plan() -> UI (Member 6)
 
@@ -20,11 +20,12 @@ Output of generate_study_plan():
       "status": "success" | "error", "error": None | "message",
       "exam_date": "2026-10-20", "start_date": "2026-10-03",
       "days_until_exam": 17, "hours_per_day": 2.0, "warnings": [],
-      "topic_allocation": [{"topic", "status", "percentage",
-                            "total_minutes", "share_percent"}],
+      "total_minutes": 2040, "total_hours": 34.0,
+      "topic_allocation": [{"topic", "status", "percentage", "total_minutes",
+                            "total_hours", "share_percent"}],
       "daily_plan": [
         {"day": 1, "date": "2026-10-03", "weekday": "Sat",
-         "phase": "study" | "final_revision", "total_minutes": 120,
+         "phase": "study" | "final_revision", "total_minutes": 120, "total_hours": 2.0,
          "blocks": [{"topic", "minutes", "status", "activity",
                      "focus_questions": [...]}],
          "note": "..." | None}
@@ -74,10 +75,26 @@ CHECKPOINT_NOTE = ("Checkpoint: retake the StudyLens quiz today so your plan can
 
 
 # ----------------------------------------------------------------- helpers
+def format_duration(minutes) -> str:
+    """Human-friendly length: 45 -> '45 min', 120 -> '2h', 105 -> '1h 45m'."""
+    m = int(round(minutes))
+    if m < 60:
+        return f"{m} min"
+    hours, rest = divmod(m, 60)
+    return f"{hours}h" if rest == 0 else f"{hours}h {rest}m"
+
+
+def minutes_with_hours(minutes) -> str:
+    """Minutes with hours in brackets: 2100 -> '2100 min (35h)'; under an hour -> '45 min'."""
+    m = int(round(minutes))
+    return f"{m} min" if m < 60 else f"{m} min ({format_duration(m)})"
+
+
 def _error(message: str) -> dict:
     return {
         "status": "error", "error": message, "exam_date": None, "start_date": None,
         "days_until_exam": 0, "hours_per_day": 0, "warnings": [],
+        "total_minutes": 0, "total_hours": 0.0,
         "topic_allocation": [], "daily_plan": [], "summary": "", "coach_message": None,
     }
 
@@ -275,6 +292,7 @@ def generate_study_plan(performance: dict, exam_date, hours_per_day: float = 2.0
                 "weekday": current.strftime("%a"),
                 "phase": "final_revision" if is_final else "study",
                 "total_minutes": sum(b["minutes"] for b in blocks),
+                "total_hours": round(sum(b["minutes"] for b in blocks) / 60, 2),
                 "blocks": blocks,
                 "note": note,
             })
@@ -288,6 +306,7 @@ def generate_study_plan(performance: dict, exam_date, hours_per_day: float = 2.0
             {"topic": name, "status": by_name[name]["status"],
              "percentage": by_name[name]["percentage"],
              "total_minutes": minutes[name],
+             "total_hours": round(minutes[name] / 60, 2),
              "share_percent": round(100 * minutes[name] / grand_total, 1)}
             for name in order
         ]
@@ -295,19 +314,21 @@ def generate_study_plan(performance: dict, exam_date, hours_per_day: float = 2.0
         top = max(topic_allocation, key=lambda a: (a["total_minutes"], -order.index(a["topic"])))
         summary = (
             f"{days_available} day{'s' if days_available != 1 else ''} until your exam on "
-            f"{exam.isoformat()}, studying {hours:g}h/day ({grand_total} minutes in total). "
+            f"{exam.isoformat()}, studying {hours:g}h/day, {minutes_with_hours(grand_total)} in total. "
         )
         if top["status"] == "strong":
             summary += "Your scores are strong everywhere, so the plan focuses on steady revision. "
         else:
-            summary += (f"Most time goes to {top['topic']} ({top['total_minutes']} min, "
-                        f"{top['share_percent']:g}% of the plan). ")
+            summary += (f"Most time goes to {top['topic']}: "
+                        f"{minutes_with_hours(top['total_minutes'])}, "
+                        f"{top['share_percent']:g}% of the plan. ")
         summary += "Retake the quiz to refresh the plan as you improve."
 
         return {
             "status": "success", "error": None,
             "exam_date": exam.isoformat(), "start_date": start.isoformat(),
             "days_until_exam": days_available, "hours_per_day": hours, "warnings": warnings,
+            "total_minutes": grand_total, "total_hours": round(grand_total / 60, 2),
             "topic_allocation": topic_allocation, "daily_plan": daily_plan,
             "summary": summary,
             "coach_message": _llm_coach_message(llm, performance, summary),

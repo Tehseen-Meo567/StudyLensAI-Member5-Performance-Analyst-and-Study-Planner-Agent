@@ -1,0 +1,91 @@
+{
+  "status": "success",
+  "error": null,
+  "score": 5.0,
+  "total": 6,
+  "percentage": 83.3,
+  "results": [
+    {
+      "id": "mcq_1",
+      "topic": "Cell Biology",
+      "type": "mcq",
+      "question": "Which organelle produces most of the cell's ATP?",
+      "student_answer": "Mitochondria",
+      "correct_answer": "Mitochondria",
+      "is_correct": true,
+      "marks": 1.0,
+      "feedback": "Correct!"
+    },
+    {
+      "id": "mcq_2",
+      "topic": "Genetics",
+      "type": "mcq",
+      "question": "Which base pairs with adenine in DNA?",
+      "student_answer": "Thymine",
+      "correct_answer": "Thymine",
+      "is_correct": true,
+      "marks": 1.0,
+      "feedback": "Correct!"
+    },
+    {
+      "id": "mcq_3",
+      "topic": "Cell Biology",
+      "type": "mcq",
+      "question": "Where does protein synthesis occur?",
+      "student_answer": "Ribosome",
+      "correct_answer": "Ribosome",
+      "is_correct": true,
+      "marks": 1.0,
+      "feedback": "Correct!"
+    },
+    {
+      "id": "tf_1",
+      "topic": "Genetics",
+      "type": "true_false",
+      "question": "DNA is a single-stranded molecule.",
+      "student_answer": "False",
+      "correct_answer": "False",
+      "is_correct": true,
+      "marks": 1.0,
+      "feedback": "Correct!"
+    },
+    {
+      "id": "tf_2",
+      "topic": "Cell Biology",
+      "type": "true_false",
+      "question": "Ribosomes synthesize proteins.",
+      "student_answer": "True",
+      "correct_answer": "True",
+      "is_correct": true,
+      "marks": 1.0,
+      "feedback": "Correct!"
+    },
+    {
+      "id": "short_1",
+      "topic": "Genetics",
+      "type": "short",
+      "question": "What is DNA?",
+      "student_answer": "(not answered)",
+      "correct_answer": "A molecule that carries genetic information",
+      "is_correct": false,
+      "marks": 0.0,
+      "feedback": "Not answered. "
+    }
+  ],
+  "topic_performance": {
+    "Cell Biology": {
+      "correct": 3,
+      "total": 3,
+      "marks": 3.0,
+      "max_marks": 3,
+      "percentage": 100.0
+    },
+    "Genetics": {
+      "correct": 2,
+      "total": 3,
+      "marks": 2.0,
+      "max_marks": 3,
+      "percentage": 66.7
+    }
+  }
+}

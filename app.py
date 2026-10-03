@@ -1,5 +1,5 @@
 """
-StudyLens AI - Member 5 demo (Performance Analysis + Study Planner)
+StudyLens AI - Study Coach demo (Performance Analysis + Study Planner)
 
 Run:  streamlit run app.py
 Paste or upload Member 4's quiz result JSON (or use the sample), pick an exam
@@ -12,7 +12,8 @@ from datetime import date, timedelta
 
 import streamlit as st
 
-from member5_agent import run_member5_agent
+from study_coach_agent import run_study_coach_agent
+from study_planner_agent import minutes_with_hours
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ICON = {"weak": "🔴", "needs_practice": "🟡", "strong": "🟢"}
@@ -20,7 +21,7 @@ LABEL = {"weak": "Weak", "needs_practice": "Needs practice", "strong": "Strong"}
 
 st.set_page_config(page_title="StudyLens AI - Performance & Study Plan", page_icon="📚", layout="wide")
 st.title("📚 StudyLens AI - Performance & Study Plan")
-st.caption("Member 5: Performance Analysis Agent + Study Planner Agent")
+st.caption("Performance Analysis Agent + Study Planner Agent")
 
 
 def load_json(uploaded, pasted):
@@ -64,7 +65,7 @@ if go:
         st.stop()
 
     with st.spinner("Analysing your performance and building your plan..."):
-        st.session_state["out"] = run_member5_agent(quiz, exam.isoformat(), hours,
+        st.session_state["out"] = run_study_coach_agent(quiz, exam.isoformat(), hours,
                                                     previous_performance=previous)
 
 out = st.session_state.get("out")
@@ -105,7 +106,7 @@ with st.expander("Questions to review"):
 
 # -------------------------------------------------------------- the plan
 if plan:
-    st.header("Your study plan")
+    st.header("Your personalised study plan")
     st.write(plan["summary"])
     if plan.get("coach_message"):
         st.success(plan["coach_message"])
@@ -113,18 +114,32 @@ if plan:
         st.warning(w)
 
     st.subheader("Time per topic")
-    st.bar_chart({a["topic"]: a["total_minutes"] for a in plan["topic_allocation"]}, y_label="Minutes")
+    unit = st.radio("Show time in", ["Minutes", "Hours", "Both"], horizontal=True)
+    alloc = plan["topic_allocation"]
+    minutes_data = {a["topic"]: a["total_minutes"] for a in alloc}
+    hours_data = {a["topic"]: a["total_hours"] for a in alloc}
+    if unit == "Both":
+        col_m, col_h = st.columns(2)
+        col_m.caption("Minutes")
+        col_m.bar_chart(minutes_data, y_label="Minutes")
+        col_h.caption("Hours")
+        col_h.bar_chart(hours_data, y_label="Hours")
+    elif unit == "Hours":
+        st.bar_chart(hours_data, y_label="Hours")
+    else:
+        st.bar_chart(minutes_data, y_label="Minutes")
+    st.caption("  |  ".join(f"{a['topic']}: {minutes_with_hours(a['total_minutes'])}" for a in alloc))
 
     st.subheader("Day by day")
     for d in plan["daily_plan"]:
-        title = f"Day {d['day']} - {d['weekday']} {d['date']} ({d['total_minutes']} min)"
+        title = f"Day {d['day']} - {d['weekday']} {d['date']} - {minutes_with_hours(d['total_minutes'])}"
         if d["phase"] == "final_revision":
             title += " - Final revision"
         with st.expander(title, expanded=d["day"] == 1):
             if d["note"]:
                 st.caption(d["note"])
             for b in d["blocks"]:
-                st.markdown(f"{ICON[b['status']]} **{b['topic']}** - {b['minutes']} min  \n{b['activity']}")
+                st.markdown(f"{ICON[b['status']]} **{b['topic']}** - {minutes_with_hours(b['minutes'])}  \n{b['activity']}")
                 for q in b["focus_questions"]:
                     st.write(f"  - Revisit: {q}")
 

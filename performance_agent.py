@@ -1,13 +1,7 @@
 """
-StudyLens AI - Performance Analysis Agent (Member 5, part 1)
+StudyLens AI - Performance Analysis Agent 
 
-Flow:  Quiz Agent (Member 4) -> analyze_performance() -> Study Planner Agent
-                                                      -> UI (Member 6)
 
-INTERFACE CONTRACT (share this with the team)
----------------------------------------------
-Input  quiz_result : the dict returned by Member 4's run_quiz_agent() /
-                     QuizAgent.evaluate():
 
     {
       "status": "success", "error": None,

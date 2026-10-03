@@ -1,50 +1,7 @@
 """
 StudyLens AI - Study Planner Agent
 
-Flow:  Performance Agent -> generate_study_plan() -> UI (Member 6)
 
-The schedule is computed in plain Python (so it is deterministic and always
-valid). An optional LLM only adds a short friendly "coach_message" on top.
-
-INTERFACE CONTRACT (share this with the team)
----------------------------------------------
-Input  performance   : output of performance_agent.analyze_performance()
-       exam_date     : "YYYY-MM-DD" string (or a datetime.date)
-       hours_per_day : study hours available per day (0.5 - 16, default 2)
-       start_date    : optional "YYYY-MM-DD"; defaults to today (tests use it)
-       llm           : optional, object with generate_json(system, prompt, max_tokens)
-
-Output of generate_study_plan():
-
-    {
-      "status": "success" | "error", "error": None | "message",
-      "exam_date": "2026-10-20", "start_date": "2026-10-03",
-      "days_until_exam": 17, "hours_per_day": 2.0, "warnings": [],
-      "total_minutes": 2040, "total_hours": 34.0,
-      "topic_allocation": [{"topic", "status", "percentage", "total_minutes",
-                            "total_hours", "share_percent"}],
-      "daily_plan": [
-        {"day": 1, "date": "2026-10-03", "weekday": "Sat",
-         "phase": "study" | "final_revision", "total_minutes": 120, "total_hours": 2.0,
-         "blocks": [{"topic", "minutes", "status", "activity",
-                     "focus_questions": [...]}],
-         "note": "..." | None}
-      ],
-      "summary": "...", "coach_message": None | "..."
-    }
-
-How the plan works
-  * Day 1 .. N-1 are study days, day N (the day before the exam) is final revision.
-  * Each topic gets time proportional to how weak it is: weight = max(15, 100 - score%).
-    Weak topics get the most time, strong topics a light recap, and every topic
-    appears at least once.
-  * Time is split in 15-minute slots and spread across days so weak topics come
-    back again and again (spaced practice) instead of one long block.
-  * ADAPTIVE: call it again with the new quiz's performance and today's date -
-    the plan is rebuilt for the remaining days with the updated weak topics.
-    On a plan of 5+ study days a "checkpoint" day reminds the student to retake the quiz.
-
-On failure: {"status": "error", "error": "message", ...} - the agent never raises.
 """
 
 from __future__ import annotations
